@@ -117,6 +117,17 @@ function bootTick(){
     },600);
   }
 }
+  // Bitcoin ár lekérése
+  async function loadBTC(){
+  try{
+    const r = await fetch("https://api.coindesk.com/v1/bpi/currentprice/USD.json");
+    const d = await r.json();
+    const price = d.bpi.USD.rate;
+    document.getElementById("btc-price").textContent = `1 BTC = ${price} USD`;
+  }catch(e){
+    document.getElementById("btc-price").textContent = "Hiba az ár lekérésekor.";
+  }
+}
 bootTick();
 
 /* Menü + hang */
