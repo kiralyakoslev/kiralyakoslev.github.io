@@ -1,11 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="hu">
 <head>
-  <meta charset="UTF-8">
-  <title>Az első weboldalam</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Retro Terminal Web</title>
+<style>
+  /* Alap stílusok - konzol / terminál zöld megjelenés */
+  :root{
+    --bg:#000;
+    --text:#00ff55;
+    --muted:rgba(0,255,85,0.45);
+  }
+  html,body{height:100%;margin:0;padding:0;background:var(--bg);color:var(--text);font-family: "Courier New", monospace;}
+  .screen{padding:24px;max-width:980px;margin:18px auto;}
+  .hidden{display:none;}
+  .cursor{display:inline-block;width:12px;animation:blink 0.7s infinite steps(1);}
+  @keyframes blink{0%{opacity:1}100%{opacity:0}}
+  .terminal-line{margin-bottom:6px;white-space:pre-wrap;font-size:16px}
+  h2{margin:0 0 6px 0;font-weight:600}
+  p.lead{color:var(--muted);margin-top:6px}
+  .menu{margin-top:18px;border-top:1px solid rgba(0,255,85,0.06);padding-top:12px;display:flex;gap:12px;flex-wrap:wrap}
+  .btn{padding:6px 10px;border-radius:6px;background:rgba(0,255,85,0.06);color:var(--text);text-decoration:none;border:1px solid rgba(0,255,85,0.06);font-size:14px}
+  .panel{background:rgba(0,0,0,0.35);padding:14px;border-radius:8px;margin-top:12px}
+  /* kis responsív */
+  @media (max-width:560px){.screen{padding:12px}}
+</style>
 </head>
 <body>
-  <h1>Helló! 👋</h1>
-  <p>Ez az én GitHub Pages weboldalam!</p>
+  <!-- BOOT képernyő -->
+  <div id="boot-screen" class="screen" aria-hidden="false">
+    <div class="terminal-line">PhoenixBIOS 4.0 Release 6.0</div>
+    <div class="terminal-line">Copyright 1985-1998 Phoenix Technologies Ltd.</div>
+    <div class="terminal-line">CPU: RetroCore 133MHz Detected</div>
+    <div class="terminal-line">Checking Memory...</div>
+    <div class="terminal-line">640K OK</div>
+    <div class="terminal-line">Initializing retro web kernel...</div>
+    <div class="terminal-line">Loading interface modules...</div>
+    <div class="terminal-line" id="boot-progress">BOOTING SYSTEM... [0%]</div>
+  </div>
+
+  <!-- FŐ képernyő (indulás után látható) -->
+  <div id="main-screen" class="screen hidden" aria-hidden="true">
+    <h2>&gt; Welcome to Retro Web Terminal <span class="cursor">█</span></h2>
+    <p class="lead">~ logged in as: guest</p>
+
+    <div class="panel">
+      <p>Ez a te retro tech projekt naplód — ide rakhatod a Nokia, Raspberry Pi, konzol és egyéb kísérleteidet.</p>
+      <div class="menu" role="navigation" aria-label="Főmenü">
+        <a class="btn" href="#home" onclick="navigate(event,'home')">Home</a>
+        <a class="btn" href="#projects" onclick="navigate(event,'projects')">Projektek</a>
+        <a class="btn" href="#log" onclick="navigate(event,'log')">Napló</a>
+        <a class="btn" href="#downloads" onclick="navigate(event,'downloads')">Letöltések</a>
+      </div>
+    </div>
+
+    <div id="content" class="panel" style="min-height:220px;margin-bottom:6px">
+      <div id="home" class="page">
+        <h3>Főoldal</h3>
+        <p class="lead">Kezd el dokumentálni a projektjeidet: fotók, kódok, leírások. Ez most egy alap terminál-sablon.</p>
+        <p>Írd be, hogy mit szeretnél látni: projektek, napló bejegyzések vagy letöltések.</p>
+      </div>
+
+      <div id="projects" class="page hidden">
+        <h3>Projektek</h3>
+        <p class="lead">Példák: Nokia modding, Raspberry Pi laptop, Pico konzol, BASIC portolás.</p>
+        <ul>
+          <li>Nokia 3410 — WAP szerver</li>
+          <li>Pi Laptop — build log és képek</li>
+          <li>Pico konzol — BASIC + Tetris</li>
+        </ul>
+      </div>
+
+      <div id="log" class="page hidden">
+        <h3>Napló</h3>
+        <p class="lead">Rövid bejegyzések: mit csináltál ma a projekttel.</p>
+        <p>- 2025-11-01: Elindult a site, boot animáció kész.</p>
+      </div>
+
+      <div id="downloads" class="page hidden">
+        <h3>Letöltések</h3>
+        <p class="lead">Itt később tölthetők le sablonok, textúrák és kódok (zip).</p>
+        <p class="muted">Nincs még fájl feltöltve.</p>
+      </div>
+    </div>
+
+    <footer style="color:var(--muted);font-size:13px">
+      © 2025 — Retro Terminal Web — Készítette: Te
+    </footer>
+  </div>
+
+<script>
+/* BOOT logika */
+let progress = 0;
+const progressBar = document.getElementById("boot-progress");
+const bootScreen = document.getElementById("boot-screen");
+const mainScreen = document.getElementById("main-screen");
+
+function bootTick(){
+  progress += Math.floor(Math.random()*12) + 4; // változó lépések
+  if(progress > 100) progress = 100;
+  progressBar.textContent = `BOOTING SYSTEM... [${progress}%]`;
+
+  if(progress < 100){
+    setTimeout(bootTick, 180 + Math.random()*200);
+  } else {
+    setTimeout(() => {
+      bootScreen.classList.add("hidden");
+      bootScreen.setAttribute("aria-hidden","true");
+      mainScreen.classList.remove("hidden");
+      mainScreen.setAttribute("aria-hidden","false");
+      // fókusz kurzorra (kis effekt)
+      const cursor = document.querySelector(".cursor");
+      if(cursor) cursor.scrollIntoView({behavior:"smooth",block:"center"});
+    }, 600);
+  }
+}
+bootTick();
+
+/* egyszerű kliensoldali navigáció a demo oldalaknak */
+function navigate(e, pageId){
+  e.preventDefault();
+  const pages = document.querySelectorAll(".page");
+  pages.forEach(p => p.classList.add("hidden"));
+  const target = document.getElementById(pageId);
+  if(target) target.classList.remove("hidden");
+  // friss URL hash anélkül, hogy újratöltene
+  history.replaceState(null,null,"#"+pageId);
+}
+</script>
 </body>
 </html>
