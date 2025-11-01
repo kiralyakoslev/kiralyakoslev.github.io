@@ -142,6 +142,7 @@ function navigate(e,pageId){
 
   document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
   document.getElementById(pageId).classList.remove("hidden");
+  if(pageId === "log") loadBTC();
   history.replaceState(null,null,"#"+pageId);
 }
 </script>
