@@ -22,7 +22,6 @@
   .menu{margin-top:18px;border-top:1px solid rgba(0,255,85,0.06);padding-top:12px;display:flex;gap:12px;flex-wrap:wrap}
   .btn{padding:6px 10px;border-radius:6px;background:rgba(0,255,85,0.06);color:var(--text);text-decoration:none;border:1px solid rgba(0,255,85,0.06);font-size:14px}
   .panel{background:rgba(0,0,0,0.35);padding:14px;border-radius:8px;margin-top:12px}
-  /* kis responsív */
   @media (max-width:560px){.screen{padding:12px}}
 </style>
 </head>
@@ -39,7 +38,7 @@
     <div class="terminal-line" id="boot-progress">BOOTING SYSTEM... [0%]</div>
   </div>
 
-  <!-- FŐ képernyő (indulás után látható) -->
+  <!-- FŐ képernyő -->
   <div id="main-screen" class="screen hidden" aria-hidden="true">
     <h2>&gt; Welcome to Retro Web Terminal <span class="cursor">█</span></h2>
     <p class="lead">~ logged in as: guest</p>
@@ -58,7 +57,7 @@
       <div id="home" class="page">
         <h3>Főoldal</h3>
         <p class="lead">Ez most egy alap terminál-sablon.</p>
-        <p>Írd be, hogy mit szeretnél látni: projektek, napló bejegyzések vagy letöltések.</p>
+        <p>Írd be, hogy mit szeretnél látni: projektek, napló vagy letöltések.</p>
       </div>
 
       <div id="projects" class="page hidden">
@@ -66,21 +65,19 @@
         <p class="lead">Példák: Nokia modding, Raspberry Pi laptop, Pico konzol, BASIC portolás.</p>
         <ul>
           <li>Nokia 3410 — WAP szerver</li>
-          <li>Pi Laptop — build log és képek</li>
+          <li>Pi Laptop — build log</li>
           <li>Pico konzol — BASIC + Tetris</li>
         </ul>
       </div>
 
       <div id="log" class="page hidden">
         <h3>Napló</h3>
-        <p class="lead">Rövid bejegyzések: mit csináltál ma a projekttel.</p>
         <p>- 2025-11-01: Elindult a site, boot animáció kész.</p>
       </div>
 
       <div id="downloads" class="page hidden">
         <h3>Letöltések</h3>
-        <p class="lead">Itt később tölthetők le sablonok, textúrák és kódok (zip).</p>
-        <p class="muted">Nincs még fájl feltöltve.</p>
+        <p class="lead">Később ide kerülnek fájlok.</p>
       </div>
     </div>
 
@@ -88,6 +85,9 @@
       © 2025 — Retro Terminal Web — Készítette: Király Ákos
     </footer>
   </div>
+
+<!-- CLICK HANG / GOMB HANG -->
+<audio id="click-sound" src="https://actions.google.com/sounds/v1/ui/click.ogg"></audio>
 
 <script>
 /* BOOT logika */
@@ -97,7 +97,7 @@ const bootScreen = document.getElementById("boot-screen");
 const mainScreen = document.getElementById("main-screen");
 
 function bootTick(){
-  progress += Math.floor(Math.random()*12) + 4; // változó lépések
+  progress += Math.floor(Math.random()*12) + 4;
   if(progress > 100) progress = 100;
   progressBar.textContent = `BOOTING SYSTEM... [${progress}%]`;
 
@@ -106,25 +106,23 @@ function bootTick(){
   } else {
     setTimeout(() => {
       bootScreen.classList.add("hidden");
-      bootScreen.setAttribute("aria-hidden","true");
       mainScreen.classList.remove("hidden");
-      mainScreen.setAttribute("aria-hidden","false");
-      // fókusz kurzorra (kis effekt)
-      const cursor = document.querySelector(".cursor");
-      if(cursor) cursor.scrollIntoView({behavior:"smooth",block:"center"});
     }, 600);
   }
 }
 bootTick();
 
-/* egyszerű kliensoldali navigáció a demo oldalaknak */
+/* MENU CLICK + NAVIGÁCIÓ */
 function navigate(e, pageId){
   e.preventDefault();
+  document.getElementById("click-sound").play().catch(()=>{});
+
   const pages = document.querySelectorAll(".page");
   pages.forEach(p => p.classList.add("hidden"));
+
   const target = document.getElementById(pageId);
   if(target) target.classList.remove("hidden");
-  // friss URL hash anélkül, hogy újratöltene
+
   history.replaceState(null,null,"#"+pageId);
 }
 </script>
