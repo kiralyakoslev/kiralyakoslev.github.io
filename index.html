@@ -121,6 +121,18 @@
 <audio id="click-sound" src="click.mp3"></audio>
 
 <script>
+  let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("sound-status").textContent = soundEnabled ? "ON" : "OFF";
+});
+
+document.getElementById("sound-toggle").addEventListener("click", () => {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem("soundEnabled", soundEnabled);
+  document.getElementById("sound-status").textContent = soundEnabled ? "ON" : "OFF";
+});
+
 /* BOOT animáció */
 let progress = 0;
 function bootTick(){
