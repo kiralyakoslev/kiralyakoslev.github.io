@@ -176,10 +176,12 @@ function navigate(e,pageId){
 
   // MP3 lejátszás
   const snd = document.getElementById("click-sound");
-  if(soundEnabled){
+ if(soundEnabled){
   snd.currentTime = 0;
   snd.volume = 1.0;
   snd.play().catch(()=>{});
+}
+
 
   document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
   document.getElementById(pageId).classList.remove("hidden");
