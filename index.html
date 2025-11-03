@@ -176,6 +176,7 @@ function navigate(e,pageId){
 
   // MP3 lejátszás
   const snd = document.getElementById("click-sound");
+  if(soundEnabled){
   snd.currentTime = 0;
   snd.volume = 1.0;
   snd.play().catch(()=>{});
