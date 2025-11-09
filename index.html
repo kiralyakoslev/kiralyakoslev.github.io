@@ -188,6 +188,18 @@ function navigate(e,pageId){
   if(pageId === "log") loadBTC();
   history.replaceState(null,null,"#"+pageId);
 }
+  // ⏰ Óra frissítése
+function updateClock() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+  document.getElementById("clock").textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+// Frissítés minden másodpercben
+setInterval(updateClock, 1000);
+updateClock();
 </script>
 </body>
 </html>
